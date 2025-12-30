@@ -1,0 +1,153 @@
+\chapter{確率分布がなす多様体}
+
+皆さんは当然、\textbf{正規分布}、みたことあると思います。
+\[
+  p(x;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}
+\]
+これは平均$\mu\in\mathbb{R}$と分散$\sigma>0$が定まれば、一つの正規分布が定まると見ることができます。
+このように、\textbf{確率分布をパラメータづける空間}を幾何的に調べてみましょう、というのが素朴な出発点のようです。
+確率分布$p(x)$が$\xi\in\mathbb{R}^n$でパラメータづけることができる場合、これを
+\[
+  p(x;\xi)
+\]
+と書きます。
+
+もちろんこれだけでは、好き勝手に$\mathbb{R}^n$の開集合を考えてるだけにすぎないです。
+ここに\textbf{Fisher情報量}あるいは\textbf{Fisher情報行列}と呼ばれる構造を含めて考えると、これがそのままRiemann計量になるという指摘が古くからなされています\footnote{
+  TODO: 出典？Information and the Accuracy Attainable in the Estimation of Statistical Parameters
+}。
+ものとしては、エントロピー$\log p(x;\xi)$を$\xi^i$で微分したものの積の、期待値です。
+\[
+  g_{ij}(\xi):=E_\xi\left[\frac{\partial \log p(x;\xi)}{\partial \xi^i}\frac{\partial \log p(x;\xi)}{\partial \xi^j}\right]
+\]
+
+Riemann幾何を学んだ人は、計量があればそれに付随するRiemann接続を考えたくなります。
+具体的には、統計的モデルの実際の分布関数を推定するために、いくつかのサンプルを観測して特徴量をあてはめるわけですが、その偏り具合・バイアスがほぼそのまま接続としての役割を果たすようです。
+ところが統計学から自然に出てくる接続$\nabla^{(\alpha)}$ ($\alpha$は任意の実数)は、一般にはRiemann接続にはなっていません。
+ところがベクトル場$X,Y,Z$に対して
+\[
+  Xg(Y,Z)=g(\nabla_X^{(\alpha)}Y,Z)+g(Y,\nabla_X^{(-\alpha)}Z)
+\]
+を満たすという意味で、$\nabla^{(\alpha)}$と$\nabla^{(-\alpha)}$は\textbf{双対接続}となっています。
+また$\nabla^{(\alpha)}$の接続係数は、Riemann接続$\nabla=nabla^{(0)}$の接続係数$\Gamma_{ij,k}^{(0)}$によって
+\[
+  \Gamma_{ij,k}^{(\alpha)}(\xi)=\Gamma_{ij,k}^{(0)}+\frac{1-\alpha}{2}E_{\xi}[\partial_i\log p\partial_j\log p\partial_k\log p]
+\]
+とあらわされるものですから、これらをもとに微分幾何をやろうというのは非常に自然な発想と言えましょう。
+
+
+
+
+
+\section{Fisher情報量}
+
+Fisher情報量とは一言でいうと「推定のしやすさをあらわす量」です。
+つまり、Fisher情報量が大きければ大きいほど、少ないサンプルから妥当な推定ができると言え、Fisher情報量が小さければ小さいほど、妥当な推定を行うために多くのサンプルが必要となると言える量です。
+例えば正規分布であれば、分散が小さければ小さいほど山が尖っており、少ないサンプルでもおおよそ「どこにピークがあるか？」を探しやすいです。
+これはラジオのチューニングにたとえることができるでしょう\footnote{
+  今はそもそもラジオを聞く人がいないかもしれませんが、昔はアナログなツマミを回して目当ての電波を拾っていました。
+}。
+
+数学的には、以下のように厳密に定義していきます。
+
+\begin{definition}[統計的モデル]
+  $(\Omega,\mathcal{B})$を測度空間とする。
+  また、$n>0$を整数とし、$\Xi$を$\mathbb{R}^n$の部分集合とする。
+  $\Omega$上の確率密度の族$S$が$\Xi$でパラメータ付けられる場合、即ち
+  \[
+    S=\{p_{\xi}=p(x;\xi)\mid \xi=(\xi^1,\dots,\xi^n)\in\Xi\}
+  \]
+  と書けており、かつ対応
+  \[
+    \Xi\to S;\xi\mapsto p_{\xi}
+  \]
+  が単射であるとき、$n$次元\textbf{統計的モデル}、または、\textbf{パラメトリックモデル}、または単に\textbf{モデル}という。
+\end{definition}
+測度空間$(\Omega,\mathcal{B})$と、$n$個の実数でパラメトライズされた確率密度の族を統計的モデルというわけです。
+Bourbaki流に$(\Omega,\mathcal{B},\Xi,S)$とでも書くべきでしょうか。
+
+次は正規分布が統計的モデルの定義をみたしていることを見ます。
+\begin{example}
+  平均$\mu\in\mathbb{R}$、偏差$\sigma>0$の正規分布
+  \[
+    p(x;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}
+  \]
+  の族は、2次元統計的モデルである。
+\end{example}
+
+上記の具体例を座右に、Fisher情報量を定義しましょう。
+\begin{definition}[Fisher情報量]
+  $\Xi\subset\mathbb{R}^n$は開集合とし、$S$を測度空間$(\Omega,\mathcal{B})$の$\Xi$上の$n$次元統計的モデルとする。
+  また各$x\in\Omega$に対して、写像
+  \[
+    \Xi\to\mathbb{R};\xi\mapsto p(x;\xi)
+  \]
+  は滑らかであるとする。
+  このとき、以下の期待値からなる行列
+  \[
+    g_{ij}(\xi):=E_\xi\left[\frac{\partial \log p(x;\xi)}{\partial \xi^i}\frac{\partial \log p(x;\xi)}{\partial \xi^j}\right]
+  \]
+  を\textbf{Fisher情報量}あるいは\textbf{Fisher情報行列}と呼ぶ。
+\end{definition}
+
+\begin{example}[正規分布のFisher情報量]
+  平均$\mu\in\mathbb{R}$、偏差$\sigma>0$の正規分布の場合
+  \[
+    \log p(x;\mu,\sigma)=-\frac12\log 2\pi - \log \sigma - \frac{(x-\mu)^2}{2\sigma^2}
+  \]
+  より
+  \begin{align*}
+    \frac{\partial \log p(x;\mu,\sigma)}{\partial \mu}&=\frac{x-\mu}{\sigma^2}\\
+    \frac{\partial \log p(x;\mu,\sigma)}{\partial \sigma}&= - \frac1\sigma + \frac{(x-\mu)^2}{\sigma^3}
+  \end{align*}
+  期待値を計算すると、
+  \begin{align*}
+    g_{\mu\mu}&=\int_\mathbb{R}\frac{(x-\mu)^2}{\sigma^4}\frac{1}{\sqrt{2\pi}\sigma}\exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}dx=\frac1{\sigma^2}\\
+    g_{\mu\sigma}=g_{\sigma\mu}&=\int_\mathbb{R}\frac{x-\mu}{\sigma^2}\left\{- \frac1\sigma + \frac{(x-\mu)^2}{\sigma^3}\right\}\frac{1}{\sqrt{2\pi}\sigma}\exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}dx=0\\
+    g_{\sigma\sigma}&=\int_\mathbb{R}\left\{- \frac1\sigma + \frac{(x-\mu)^2}{\sigma^3}\right\}^2\frac{1}{\sqrt{2\pi}\sigma}\exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\}dx=\frac{2}{\sigma^2}
+  \end{align*}
+  となっている。
+  計量としてまとめると、
+  \[
+    ds^2=\frac{d\mu^2+2d\sigma^2}{\sigma^2}
+  \]
+  となり、これは上半平面$\{(\mu,\sigma)\mid\mu\in\mathbb{R}, \sigma>0\}$におけるPoincar\'e計量によく似た計量である。
+\end{example}
+
+
+
+\section{$\alpha$接続}
+
+\begin{comment}
+  TODO
+  具体的には、まず\textbf{甘利-Chentsovテンソル}を
+  \[
+    C_{ijk}:=E_\xi\left[\frac{\partial \log p(x;\xi)}{\partial \xi^i}\frac{\partial \log p(x;\xi)}{\partial \xi^j}\frac{\partial \log p(x;\xi)}{\partial \xi^k}\right]
+  \]
+  で定義することができます。
+  次に$\nabla^{(0)}$を、Fisher計量に付随するRiemann計量とします。
+  これらを用いて、実数$\alpha$とベクトル場$X,Y,Z$に対して
+  \[
+    \langle\nabla_X^{(\alpha)}Y,Z\rangle=\langle\nabla_X^{(0)}Y,Z\rangle-\frac{\alpha}{2}C(X,Y,Z)
+  \]
+  を満たすアフィン接続$\nabla^{(\alpha)}$を、\textbf{$\alpha$接続}といいます。
+  $\alpha$接続の自然さは、$-\alpha$が双対接続になっているということです。
+  すなわち、
+  \[
+    Xg(Y,Z)=g(\nabla_X^{(\alpha)}Y,Z)+g(Y,\nabla_X^{(-\alpha)}Z)
+  \]
+  を満たします。
+  \end{comment}
+
+以下、例の草案
+
+正規分布（一次元ガウス分布族）
+ポアソン分布
+$\Omega$が有限集合の場合
+
+sgc
+離散分布族
+一般の統計モデル
+正測度空間
+行列の空間
+神経回路網の空間

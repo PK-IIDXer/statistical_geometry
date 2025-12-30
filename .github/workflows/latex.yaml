@@ -1,0 +1,59 @@
+# .github/workflows/latex.yml
+
+name: Build and Release PDF
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write 
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      # ステップ1: チェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # ステップ2: Dockerイメージのビルド
+      - name: Build local Docker image
+        run: docker build -t local-tex-builder .
+
+      # ステップ3: LaTeX ドキュメントをコンパイル（ローカルの保存時コマンドに合わせて修正）
+      - name: Compile LaTeX document
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/work" \
+            -w /work \
+            local-tex-builder \
+            latexmk \
+              -norc \
+              -pdf \
+              -outdir=build \
+              -e '$pdflatex = "uplatex -interaction=nonstopmode -synctex=1 -output-directory=build %O %S"' \
+              -e '$dvipdf = "dvipdfmx %O -o %D %S"' \
+              -file-line-error \
+              -halt-on-error \
+              -interaction=nonstopmode \
+              main.tex
+
+      # ステップ4: タグの更新 (変更なし)
+      - name: Update 'test' tag
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag -f test
+          git push -f origin refs/tags/test
+
+      # ステップ5: リリースの更新 (変更なし)
+      - name: Update 'test' Release with PDF
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: test
+          name: "Latest Development Build (test)"
+          body: "masterブランチから自動ビルドされた最新のPDFです。"
+          prerelease: true
+          files: build/main.pdf

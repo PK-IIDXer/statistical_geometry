@@ -1,0 +1,41 @@
+\documentclass[dvipdfmx, 11pt, oneside, openany]{jsbook}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{comment}
+\usepackage{tikz-cd}
+
+% BibLaTeXの設定
+\usepackage[style=numeric]{biblatex}
+\addbibresource{references.bib} % 参考文献ファイルの指定
+% 出力イメージ: Hartshorne, "Algebraic Geometry" [1]
+\newcommand{\mycite}[1]{%
+  \citeauthor{#1}, ``\citetitle{#1}''~\cite{#1}%
+}
+
+\theoremstyle{definition}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{problem}[theorem]{問題}
+\newtheorem{example}[theorem]{例}
+\newtheorem{conjecture}[theorem]{予想}
+\newtheorem{remark}{補足}
+\renewcommand{\proofname}{\textbf{証明}}
+
+\setlength{\textwidth}{\fullwidth}
+
+\title{情報幾何ノート}
+\author{ずんだもん博士}
+\date{\today}
+
+\begin{document}
+  \maketitle
+  \tableofcontents
+  \include{introduction}
+  \include{chap1}
+  \printbibliography
+\end{document}
