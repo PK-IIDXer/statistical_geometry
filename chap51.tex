@@ -1,29 +1,302 @@
-\section{代表値}
+\chapter{代表値}
 
-代表値には以下のものがあります。
+代表値には、ざっと以下のものがあります。
 \begin{itemize}
-  \item 中心
+  \item 中心を意味する代表値
     \begin{itemize}
-      \item 中央値
       \item (算術)平均値
+      \item 中央値
       \item モード(最頻値)
     \end{itemize}
-  \item モーメント
+  \item モーメントを意味する代表値
     \begin{itemize}
       \item 2次のモーメント：分散 $\to$ 標準偏差
       \item 3次のモーメント：歪度(分布の非対称性)
       \item 4次のモーメント：尖度(裾の厚さ、頂点の鋭さ)
     \end{itemize}
-  \item 多変量解析
+  \item 多変量解析における代表値
     \begin{itemize}
       \item 共分散・相関係数
       \item 多変量共分散
-      \item 回帰分析
-      \item 因子分析
-      \item 主成分分析
-      \item クラスター分析
-      \item 多次元尺度法
     \end{itemize}
 \end{itemize}
 
-\subsection{平均値}
+情報幾何学ではとりわけ、平均値と分散、3次のモーメントが重要になります。
+平均値はさることながら、分散という2次のモーメントと、3次のモーメントは、「適切な確率密度を探す」という推定において、それぞれ1次の近似と2次の近似を与えます。
+特に多変量解析において、分散は共分散という半正定値行列をつくり、\textbf{Fisher情報行列}というRiemann計量と深いつながりがあります。
+その文脈で3次のモーメントは、\textbf{KLダイバージェンス}という二つの確率密度の距離(のようなもの)を定義し、実際これは接空間上の接続と深いかかわりがあります。
+従ってこの章では、平均・分散・3次のモーメントについて、1次元の場合に勉強していきましょう。
+
+
+
+\section{平均値}
+
+\begin{definition}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数とする。
+  このとき、
+  \[
+    \mu:=E[X]=\int_\Omega X(\omega)dP(\omega)
+  \]
+  を、確率変数$X$の\textbf{平均値}あるいは\textbf{期待値}という。
+\end{definition}
+
+\begin{example}[サイコロの平均値]
+  \begin{align*}
+    \Omega&:=\{1,2,3,4,5,6\}\\
+    \mathcal{F}&:=2^\Omega\\
+    P(A)&=\sum_{\omega\in A}\frac16
+  \end{align*}
+  とすると、$(\Omega,\mathcal{F},P)$は確率空間となる。
+  \[
+    X(\omega):=\omega
+  \]
+  とすれば、$X:\Omega\to\mathbb{R}$は確率変数である。
+  このとき、$X$の平均値は
+  \[
+    E[X]=\int_\Omega X(\omega)dP(\omega)=\sum_{\omega=1}^6 \omega \frac16 =\frac{21}{6}=\frac72=3.5
+  \]
+\end{example}
+
+平均値は統計処理として最も多く使われるものですが、極端な外れ値に引っ張られる傾向にあるので、時と場合によって使い分けなければなりません。
+貯蓄額を例に取ると、1992年の統計では平均551万円であり、中央値が489万円だったといいます\cite{Ina-Yama-Yos92}\footnote{
+  今(2026/01/01)の感覚としてはなかなか高収入ですね。。。
+}。
+中央値は庶民の感覚に大体合致していそうですが、平均はごく一部の大富豪に引っ張られてだいぶ高く出てしまっています。
+安易に平均・期待値に過大な期待をしてしまうと、ギャンブルで大損するかもしれませんね。
+
+
+
+\section{分散}
+
+\begin{definition}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数、$\mu:=E[X]$を$X$の平均値とする。
+  このとき、
+  \[
+    V(X):=E[(X-\mu)^2]=\int_\Omega \{X(\omega)-\mu\}^2 dP(\omega)
+  \]
+  を、確率変数$X$の\textbf{分散}という。$\sigma(X)^2:=V(X)$とも書く。
+\end{definition}
+
+\begin{definition}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数、$V(X)$を$X$の分散とする。
+  このとき、
+  \[
+    \sigma(X):=\sqrt{V(X)}
+  \]
+  を、確率変数$X$の\textbf{標準偏差}という。
+\end{definition}
+
+定義をよく見ればわかる通り、分散は、$X$の実際の値が平均からどれぐらいズレうるかを意味しています。
+つまり、$X$の値が平均値から離れれば離れるほど、分散は大きくでてきます。
+二つの具体例を見てみましょう。
+
+\begin{example}[公平なサイコロの分散・標準偏差]
+  \begin{align*}
+    \Omega&:=\{1,2,3,4,5,6\}\\
+    \mathcal{F}&:=2^\Omega\\
+    P(A)&=\sum_{\omega\in A}\frac16
+  \end{align*}
+  とすると、$(\Omega,\mathcal{F},P)$は確率空間となる。
+  \[
+    X(\omega):=\omega
+  \]
+  とすれば、$X:\Omega\to\mathbb{R}$は確率変数である。
+  このとき、$X$の分散は
+  \[
+    V(X)=\int_\Omega \{X(\omega)-3.5\}^2 dP(\omega)=\sum_{\omega=1}^6 (\omega-3.5)^2 \frac16 =\frac{35}{12}=2.91666\cdots
+  \]
+  標準偏差は
+  \[
+    \sigma(X)=\sqrt{35/12}=1.708\cdots
+  \]
+\end{example}
+
+この場合は$X$が平均$3.5$から、せいぜい標準偏差$\pm1.708$ぐらいバラけていることがわかります。
+これは\textbf{平均値$3.5$あたりが出ると信じてサイコロを投げたときのリスク感}と言えます。
+このサイコロは公平なので、$3$や$4$あたりに賭けておけば、損しても得しても、標準偏差$1.7$ぐらいの誤差に収まる、というイメージです。
+
+では、偏ったサイコロの場合はどうでしょう？
+
+\begin{example}[偏ったサイコロの分散・標準偏差]
+  \begin{align*}
+    \Omega&:=\{1,2,3,4,5,6\}\\
+    \mathcal{F}&:=2^\Omega\\
+    P(A)&=\begin{cases}
+      1 & (A=\{1,6\})\\
+      0.5 & (A=\{1\} \text{ or } \{2\})\\
+      0 & (\text{otherwise})
+    \end{cases}
+  \end{align*}
+  とすると、$(\Omega,\mathcal{F},P)$は確率空間となる。
+  \[
+    X(\omega):=\omega
+  \]
+  とすれば、$X:\Omega\to\mathbb{R}$は確率変数である。
+  このとき、$X$の分散は
+  \[
+    V(X)=\int_\Omega \{X(\omega)-3.5\}^2 dP(\omega)= \frac{2.5^2+2.5^2}{2} = 6.25
+  \]
+  標準偏差は
+  \[
+    \sigma(X)=\sqrt{6.25}=2.5
+  \]
+\end{example}
+
+これはまずいですね。
+平均値が$3.5$であることは一緒なのですが、それを期待して$3$や$4$に賭けても絶対当たらないので、公平なサイコロに比べて\textbf{平均値を信じたときの損得のブレ幅が大きいです}。
+なので$1$か$6$に賭けざるを得ないのですが、そうするならもうコイン投げるのと同じことです。
+標準偏差の感覚がわかってきたでしょうか？
+
+最後に簡単な定理を紹介します。
+計算上ちょっと便利になります。
+
+\begin{theorem}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数とする。
+  $E[X^2]<+\infty$であるとすると、以下が成り立つ。
+  \[
+    V[X]=E[X^2]-E[X]^2
+  \]
+\end{theorem}
+\begin{proof}
+  TODO: chap70.tex以降
+\end{proof}
+
+
+
+\section{$k$次モーメント}
+
+\begin{definition}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数、$\mu:=E[X]$を$X$の平均値とする。
+  $k>0$を整数とするとき、
+  \[
+    \mu_k(X):=E[(X-\mu)^k]=\int_\Omega \{X(\omega)-\mu\}^k dP(\omega)
+  \]
+  を、確率変数$X$の\textbf{$k$次モーメント}という。
+\end{definition}
+
+$1$次モーメントは
+\[
+  \mu_1(X)=E[X-\mu]=E[X]-\mu=0
+\]
+なのであまり意味がないですが、一応入れておきました。
+とはいえ$\mu_1(X)=0$という事実は、$X$の分布それ自体が平均値を\textbf{重心としている}という意味を汲み取れます。
+
+$2$次モーメントは
+\[
+  \mu_2(X)=E[(X-\mu)^2]
+\]
+なので、分散に他なりません。
+
+新概念は$k\ge3$のときになります。
+
+\subsection{歪度}
+
+\begin{definition}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数、$\sigma(X)$を$X$の標準偏差とする。
+  このとき
+  \[
+    g_1(X):=\frac{\mu_3(X)}{\sigma(X)^3}
+  \]
+  を、確率変数$X$の\textbf{歪度}(\textit{skewness})という。
+\end{definition}
+
+$3$次のモーメントは、奇数乗になったことで分散で打ち消したプラスマイナスが復活しました。
+そのため、もし分布が左右対称なら、プラスとマイナスが完全に打ち消し合って$\mu_3(X)=0$になります。
+逆に言えば、値が残る場合、それは「\textbf{どちらかの裾が長く伸びている}」ことを示唆します。
+それで「歪度」というわけです。
+
+\begin{example}[公平なサイコロの$3$次モーメント・歪度]
+  \begin{align*}
+    \Omega&:=\{1,2,3,4,5,6\}\\
+    \mathcal{F}&:=2^\Omega\\
+    P(A)&=\sum_{\omega\in A}\frac16
+  \end{align*}
+  とすると、$(\Omega,\mathcal{F},P)$は確率空間となる。
+  \[
+    X(\omega):=\omega
+  \]
+  とすれば、$X:\Omega\to\mathbb{R}$は確率変数である。
+  このとき、$X$の$3$次モーメントは
+  \[
+    \mu_3(X)=\int_\Omega \{X(\omega)-3.5\}^3 dP(\omega)=\sum_{\omega=1}^6 (\omega-3.5)^3 \frac16 = 0
+  \]
+  ゆえに歪度は
+  \[
+    g_1(X)=0
+  \]
+\end{example}
+
+分散があり、歪度0というのは、平均値に綺麗に値が固まっていることを意味しています。
+もし歪度が0でない場合は、平均ではないところにピークがあるデータを意味しており、その意味で「ゆがんだデータ」と言えましょう。
+
+\subsection{尖度}
+
+\begin{definition}
+  $(\Omega,\mathcal{F},P)$を確率空間とし、$X:\Omega\to\mathbb{R}$を確率変数、$\sigma(X)$を$X$の標準偏差とする。
+  このとき
+  \[
+    g_2(X):=\frac{m_4(X)}{\sigma(X)^4}
+  \]
+  を、確率変数$X$の\textbf{尖度}(\textit{kurtosis})という。
+\end{definition}
+
+偶数乗なので再び符号は消えますが、2乗よりもさらに強烈に「平均から遠い値」を増幅します。
+
+\begin{example}[公平なサイコロの$4$次モーメント・尖度]
+  \begin{align*}
+    \Omega&:=\{1,2,3,4,5,6\}\\
+    \mathcal{F}&:=2^\Omega\\
+    P(A)&=\sum_{\omega\in A}\frac16
+  \end{align*}
+  とすると、$(\Omega,\mathcal{F},P)$は確率空間となる。
+  \[
+    X(\omega):=\omega
+  \]
+  とすれば、$X:\Omega\to\mathbb{R}$は確率変数である。
+  このとき、$X$の$4$次モーメントは
+  \[
+    \mu_4(X)=\int_\Omega \{X(\omega)-3.5\}^4 dP(\omega)=\sum_{\omega=1}^6 (\omega-3.5)^4 \frac16 = \frac{707}{48} = 14.7291666\cdots
+  \]
+  ゆえに尖度は
+  \[
+    g_2(X)=\frac{12^2}{35^2}\frac{707}{48}=1.7314\cdots
+  \]
+\end{example}
+
+\begin{example}[偏ったサイコロの分散・標準偏差]
+  \begin{align*}
+    \Omega&:=\{1,2,3,4,5,6\}\\
+    \mathcal{F}&:=2^\Omega\\
+    P(A)&=\begin{cases}
+      1 & (A=\{1,6\})\\
+      0.5 & (A=\{1\} \text{ or } \{2\})\\
+      0 & (\text{otherwise})
+    \end{cases}
+  \end{align*}
+  とすると、$(\Omega,\mathcal{F},P)$は確率空間となる。
+  \[
+    X(\omega):=\omega
+  \]
+  とすれば、$X:\Omega\to\mathbb{R}$は確率変数である。
+  このとき、$X$の$4$次モーメントは
+  \[
+    \mu_4(X)=\int_\Omega \{X(\omega)-3.5\}^4 dP(\omega)= \frac{2.5^4+2.5^4}{2} = 39.0625
+  \]
+  ゆえに尖度は
+  \[
+    g_2(X)=\frac{39.0625}{6.25^2}=1
+  \]
+\end{example}
+
+尖度はその言葉が示す通り「確率分布の尖り具合」を意味しています。
+比較対象として、標準正規分布の尖度を計算すると、
+
+\begin{align*}
+  m_4&=\int_\mathbb{R} x^4\exp\left(-\frac{x^2}{2}\right) dx = 3
+\end{align*}
+ゆえに
+\[
+  g_2=3
+\]
+となり、標準正規分布に比べて偏ったサイコロの尖度は低いと見ることができます。
+値が両端($1$と$6$)に完全に分かれているため、中央がスカスカで、分布としては最も「尖っていない」状態と言えます。

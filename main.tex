@@ -16,13 +16,13 @@
 }
 
 \theoremstyle{definition}
-\newtheorem{theorem}{定理}[chapter]
-\newtheorem{corollary}[chapter]{系}
-\newtheorem{definition}[chapter]{定義}
-\newtheorem{lemma}[chapter]{補題}
-\newtheorem{problem}[chapter]{問題}
-\newtheorem{example}[chapter]{例}
-\newtheorem{conjecture}[chapter]{予想}
+\newtheorem{theorem}{定理}[section]
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{problem}[theorem]{問題}
+\newtheorem{example}[theorem]{例}
+\newtheorem{conjecture}[theorem]{予想}
 \newtheorem{remark}{補足}
 \renewcommand{\proofname}{\textbf{証明}}
 
@@ -40,6 +40,7 @@
   \include{chap1}
   \part{統計学の基礎}
   \include{chap50}
+  \include{chap51}
   \part{確率測度論}
   \include{chap70}
   \printbibliography
