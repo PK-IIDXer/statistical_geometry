@@ -1,0 +1,2 @@
+# ほとんど至るところ等しい
+$(\Omega,\mathcal{F},\mu)$を[[測度空間]]、$A$を空でない集合、$f,g:\Omega\to A$を二つの写像とする。このとき、$f$と$g$が **ほとんど至るところ等しい** とは、$$\mu(\{\omega\in\Omega\mid f(\omega)\neq g(\omega)\})=0$$を満たす時を言う。$f$と$g$がほとんど至るところ等しいことを$$f=g\quad\text{a.e.}\;\; \omega\in\Omega$$と書き表す。

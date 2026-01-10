@@ -1,0 +1,2 @@
+# ほとんど確実に等しい
+$(\Omega,\mathcal{F},P)$を[[確率空間]]、$A$を空でない集合、$f,g:\Omega\to A$を二つの写像とする。このとき、$f$と$g$が **ほとんど確実に等しい** とは、$$P(\{\omega\in\Omega\mid f(\omega)\neq g(\omega)\})=0$$を満たす時を言う。$f$と$g$がほとんど確実に等しいことを$$f=g\quad\text{a.s.}\;\; \omega\in\Omega$$と書き表す。
